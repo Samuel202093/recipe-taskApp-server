@@ -26,6 +26,10 @@ app.use(bodyParser.json());
 app.use('/api', routes)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); 
 
+app.get('/', (req,res)=>{
+    res.status(200).send('Hello World.........')
+})
+
 
 app.listen(port, ()=>{
     console.log(`server running on port: ${port}`)
