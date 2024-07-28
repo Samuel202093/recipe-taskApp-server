@@ -47,6 +47,10 @@ export const fetchRecipes = async (req, res) => {
   try {
     const page = parseInt(req.query?.page) || 1;
     const limit = parseInt(req.query?.limit) || 3;
+    const totalRecipes = await Recipe.countDocuments();
+    const totalPages = Math.ceil(totalRecipes / limit);
+    const isLastPage = page >= totalPages;
+
     const recipe = await Recipe.find()
       .skip((page - 1) * limit)
       .limit(limit)
@@ -56,7 +60,7 @@ export const fetchRecipes = async (req, res) => {
     } else {
       res
         .status(200)
-        .send({ message: "recipes gotten successfully", data: recipe });
+        .send({ message: "recipes gotten successfully", data: recipe, lastPage:isLastPage });
     }
   } catch (error) {
     res.status(404).send({ message: error.message });
