@@ -1,7 +1,6 @@
-import Recipe from '../models/recipe.js'
-import cloudinary from '../utils/cloudinary.js'
-import {validationResult} from 'express-validator'
-
+import Recipe from "../models/recipe.js";
+import cloudinary from "../utils/cloudinary.js";
+import { validationResult } from "express-validator";
 
 export const createRecipe = async (req, res) => {
   try {
@@ -9,7 +8,7 @@ export const createRecipe = async (req, res) => {
     const validationErrors = validationResult(req);
 
     if (!validationErrors.isEmpty()) {
-      return res.status(400).json(validationErrors.array())
+      return res.status(400).json(validationErrors.array());
     }
 
     if (!req.file) {
@@ -26,7 +25,7 @@ export const createRecipe = async (req, res) => {
     }
 
     if (req.file) {
-      const result = await cloudinary.uploader.upload(req.file.path)
+      const result = await cloudinary.uploader.upload(req.file.path);
 
       const newRecipe = new Recipe({
         title,
@@ -40,7 +39,7 @@ export const createRecipe = async (req, res) => {
         .send({ message: "recipe created successfully", data: recipe });
     }
   } catch (error) {
-    res.status(404).send({ message: error.message});
+    res.status(404).send({ message: error.message });
   }
 };
 
@@ -60,7 +59,7 @@ export const fetchRecipes = async (req, res) => {
         .send({ message: "recipes gotten successfully", data: recipe });
     }
   } catch (error) {
-    res.status(404).send({ message: error.message});
+    res.status(404).send({ message: error.message });
   }
 };
 
@@ -74,12 +73,14 @@ export const fetchRecipe = async (req, res) => {
     }
     const recipe = await Recipe.findById(recipeId);
     if (recipe) {
-      return  res.status(200).send({ message: "recipe gotten successfully",  recipe });
+      return res
+        .status(200)
+        .send({ message: "recipe gotten successfully", recipe });
+    } else {
+      return res
+        .status(400)
+        .send({ message: error.message || "recipe not found" });
     }
-    else{
-     return res.status(400).send({ message: error.message || "recipe not found" });
-    }
-   
   } catch (error) {
     res.status(404).send({ message: error.message });
   }
@@ -123,7 +124,7 @@ export const updateRecipe = async (req, res) => {
     }
 
     if (req.file) {
-      const result = await cloudinary.uploader.upload(req.file.path)
+      const result = await cloudinary.uploader.upload(req.file.path);
       const updatedRecipe = await Recipe.findOneAndUpdate(
         { _id: recipeId },
         {
@@ -153,14 +154,13 @@ export const removeRecipe = async (req, res) => {
     const recipeId = req.params.id;
 
     const deletedRecipe = await Recipe.findByIdAndDelete(recipeId);
-      if (!deletedRecipe) {
-        return res
-          .status(400)
-          .send({ message: "recipe not deleted successfully" });
-      }
-      
-        res.status(204).send({ message: "recipe deleted successfully" });
-      
+    if (!deletedRecipe) {
+      return res
+        .status(400)
+        .send({ message: "recipe not deleted successfully" });
+    }
+
+    res.status(204).send({ message: "recipe deleted successfully" });
   } catch (error) {
     res.status(404).send({ message: error.message });
   }
@@ -171,5 +171,5 @@ export default {
   fetchRecipes,
   fetchRecipe,
   updateRecipe,
-  removeRecipe
+  removeRecipe,
 };

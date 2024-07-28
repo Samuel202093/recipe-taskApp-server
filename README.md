@@ -34,4 +34,6 @@ Server Setup
 Running Tests
   npm test
 
+live url: https://recipe-task-app-server.vercel.app
+
 
