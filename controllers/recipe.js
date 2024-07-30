@@ -8,7 +8,7 @@ export const createRecipe = async (req, res) => {
     const validationErrors = validationResult(req);
 
     if (!validationErrors.isEmpty()) {
-      return res.status(400).json(validationErrors.array());
+      return res.status(412).json({message:validationErrors.array()});
     }
 
     if (!req.file) {
@@ -25,7 +25,6 @@ export const createRecipe = async (req, res) => {
     }
 
     if (req.file) {
-
       const result = await cloudinary.uploader.upload(req.file.path);
 
       const newRecipe = new Recipe({
